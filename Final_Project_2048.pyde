@@ -75,6 +75,16 @@ class Board_2048:
         value = val if val != -1 else (2 if chance <7 else 4)
         return row, col, value
     
+    def move_tiles(self, direction):
+        if direction == "up":
+            pass
+        elif direction == "down":
+            pass
+        elif direction == "right":
+            pass
+        elif direction == "left":
+            pass
+    
     def display(self):
         for k in self.tiles:
             t = self.tiles[k]
@@ -91,3 +101,16 @@ def setup():
     
 def draw():
     game.display()
+
+def keyReleased():
+        if key == CODED:
+            if keyCode == UP:
+                game.move_tiles("up")
+            elif keyCode == DOWN:
+                game.move_tiles("down")
+            elif keyCode == RIGHT:
+                game.move_tiles("right")
+            elif keyCode == LEFT:
+                game.move_tiles("left")
+                
+    
