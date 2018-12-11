@@ -77,13 +77,120 @@ class Board_2048:
     
     def move_tiles(self, direction):
         if direction == "up":
-            pass
+            self.move_up()
         elif direction == "down":
-            pass
+            self.move_down()
         elif direction == "right":
-            pass
+            self.move_right()
         elif direction == "left":
-            pass
+            self.move_left()
+        self.reset()
+    
+    def move_up(self):
+        has_moved = False
+        for row in range(1, 4):
+            for col in range(4):
+                t2 = self.tiles[(row, col)]
+                if t2.value != 0:
+                    r = row
+                    while r > 0 and self.tiles[(r - 1, col)].value == 0:
+                        has_moved = True
+                        r = r - 1
+                    self.swap(self.tiles[(r, col)], t2)
+                    if r != 0:
+                        t2 = self.tiles[(r, col)]
+                        t1 = self.tiles[(r - 1, col)]
+                        if t2.value == t1.value:
+                            #If two tiles have same values, merge
+                            self.merge(t1, t2)
+                            has_moved = True
+                            t1.merged = True
+        if has_moved:
+             r, c, v = self.params_for_new_tile()
+             self.tiles[(r, c)].value = v
+    def move_down(self):
+        has_moved = False
+        for row in [2, 1, 0]:
+            for col in range(4):
+                t2 = self.tiles[(row, col)]
+                if t2.value != 0:
+                    r = row
+                    while r < 3 and self.tiles[(r + 1, col)].value == 0:
+                        has_moved = True
+                        r = r + 1
+                    self.swap(self.tiles[(r, col)], t2)
+                    if r != 3:
+                        t2 = self.tiles[(r, col)]
+                        t1 = self.tiles[(r + 1, col)]
+                        if t2.value == t1.value:
+                            #If two tiles have same values, merge
+                            self.merge(t1, t2)
+                            has_moved = True
+        if has_moved:
+            r, c, v = self.params_for_new_tile()
+            self.tiles[(r, c)].value = v
+    def move_right(self):
+        has_moved = False
+        for col in [2, 1, 0]:
+            for row in range(4):
+                t2 = self.tiles[(row, col)]
+                if t2.value != 0:
+                    c = col 
+                    while c < 3 and self.tiles[(row, c + 1)].value == 0:
+                        has_moved = True
+                        c = c + 1
+                    self.swap(self.tiles[(row, c)], t2)
+                    if c != 3:
+                        t2 = self.tiles[(row, c)]
+                        t1 = self.tiles[(row, c + 1)]
+                        if t2.value == t1.value:
+                            #If two tiles have same values, merge
+                            self.merge(t1, t2)
+                            has_moved = True
+        if has_moved:
+            r, c, v = self.params_for_new_tile()
+            self.tiles[(r, c)].value = v
+
+    def move_left(self):
+        has_moved = False
+        for col in range(1, 4):
+            for row in range(4):
+                t2 = self.tiles[(row, col)]
+                if t2.value != 0:
+                    c = col 
+                    while c > 0 and self.tiles[(row, c - 1)].value == 0:
+                        has_moved = True
+                        c = c - 1
+                    self.swap(self.tiles[(row, c)], t2)
+                    if c != 0:
+                        t2 = self.tiles[(row, c)]
+                        t1 = self.tiles[(row, c - 1)]
+                        if t2.value == t1.value:
+                            #If two tiles have same values, merge
+                            self.merge(t1, t2)
+                            has_moved = True
+                            t1.merged = True
+        if has_moved:
+            r, c, v = self.params_for_new_tile()
+            self.tiles[(r, c)].value = v
+    def swap(self, t1, t2):
+        temp = t1.value
+        t1.value = t2.value
+        t2.value = temp
+    def reset(self):
+        for row in range(4):
+            for col in range(4):
+                self.tiles[(row, col)].merged = False
+    #Merges Tile t2 into Tile t1
+    def merge(self, t1, t2):
+        # Double the value for t1, remove t2, and increment score (and high score if applicable)
+        if not t1.merged:
+            t1.value *= 2
+            t2.value = 0
+            self.tile_count -= 1
+            self.score += t1.value
+            if self.score > self.highscore:
+                self.highscore += t1.value
     
     def display(self):
         for k in self.tiles:
