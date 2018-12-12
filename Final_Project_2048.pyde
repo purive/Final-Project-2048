@@ -8,6 +8,7 @@ class Tile:
         self.row = row
         self.col = col
         self.value = value
+        self.merged = False
         self.color_list = [(239, 234, 214), (239, 234, 214), (223, 174, 125), (247, 181, 149),
                            (238, 117, 111), (253,  81,  62), (252, 239, 150), (251, 233, 104),
                            (250, 226,  61), (248, 218,  12), (241, 213,   7), (  0,   0,   0)]
@@ -192,10 +193,76 @@ class Board_2048:
             if self.score > self.highscore:
                 self.highscore += t1.value
     
+    def has_lost(self):
+        if self.tile_count == 16:
+            return self.is_immovable()
+        else:
+            return False
+    
+    def is_immovable(self):
+        rc_add = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+        for r1 in range(4):
+            for c1 in range(4):
+                for pair in rc_add:
+                    r2, c2 = r1 + pair[0], c1 + pair[1]
+                    if (r2 >= 0 and r2 < 4 and c2 >= 0 and c2 <4) and self.tiles[(r1, c1)].value == self.tiles[(r2, c2)].value:
+                        return False
+        return True
+    
     def display(self):
+        self.display_score()
         for k in self.tiles:
             t = self.tiles[k]
             t.display()
+        if self.has_lost():
+            fill(242, 213, 121)
+            stroke(80)
+            strokeCap(ROUND)
+            strokeWeight(4)
+            rect(75, 230, 600, 350, 15)
+            textFont(createFont("UD Digi Kyokasho NP-B", 18))
+            textAlign(CENTER, CENTER)
+            textSize(40)
+            fill(0)
+            text("GAME OVER", 75 + 300, 290)
+            fill(80)
+            text("Good Job!!\nYour score is {}\nPress r to retry".format(self.score), 75 + 300, 230 + 205)
+    def display_score(self):
+        #First display the logo
+        fill(241, 213, 7)
+        noStroke()
+        rect(50, 25, 150, 140, 15)
+        fill(255)
+        textFont(createFont("UD Digi Kyokasho NP-B", 18))
+        textAlign(CENTER, CENTER)
+        textSize(50)
+        text("2048", 125, 90)
+        #Next, display player's score and high score
+        fill(171, 169, 163)
+        rect(375, 15, 320, 74, 15)
+        rect(375, 95, 320, 74, 15)
+        fill(0)
+        textAlign(LEFT, TOP)
+        textSize(18)
+        text("Score: ", 385, 40)
+        text("High Score: ", 385, 120)
+        textAlign(RIGHT, BOTTOM)
+        textSize(45)
+        text(str(self.score), 665, 80)
+        text(str(self.highscore), 665, 160)
+    
+    def restart(self):
+        self.size = 4
+        self.tile_count = 0
+        self.score = 0
+        self.tiles = {}
+        self.initialize_board()
+        background(239, 234, 214)
+        fill(171, 169, 163)
+        noStroke()
+        rect(50, 175, 650, 650, 15)
+    
+    
 
 game = Board_2048()
 
@@ -210,6 +277,7 @@ def draw():
     game.display()
 
 def keyReleased():
+    if not game.has_lost():
         if key == CODED:
             if keyCode == UP:
                 game.move_tiles("up")
@@ -219,5 +287,8 @@ def keyReleased():
                 game.move_tiles("right")
             elif keyCode == LEFT:
                 game.move_tiles("left")
+    if key == 'r':
+        game.restart()
+        delay(500)
                 
     
