@@ -127,6 +127,7 @@ class Board_2048:
                             #If two tiles have same values, merge
                             self.merge(t1, t2)
                             has_moved = True
+                            t1.merged = True
         if has_moved:
             r, c, v = self.params_for_new_tile()
             self.tiles[(r, c)].value = v
@@ -148,6 +149,7 @@ class Board_2048:
                             #If two tiles have same values, merge
                             self.merge(t1, t2)
                             has_moved = True
+                            t1.merged = True
         if has_moved:
             r, c, v = self.params_for_new_tile()
             self.tiles[(r, c)].value = v
