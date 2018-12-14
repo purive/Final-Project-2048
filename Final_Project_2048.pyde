@@ -1,5 +1,9 @@
 #This is the code for the final project: Game 2048
 
+#  For the final project, I developed the code for the game 2048. 
+#The code used processing program and no other external files or programs were used to create the code. 
+#Therefore, there is no need to download anything but just run the code on processing. 
+
 import math
 
 class Tile: 
@@ -267,6 +271,7 @@ class Board_2048:
     
 
 game = Board_2048()
+print("Welcome to Simon's 2048 Game! \nPress r to restart the game any time")
 
 def setup():
     size (750,850)
